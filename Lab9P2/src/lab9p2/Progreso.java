@@ -27,18 +27,22 @@ public class Progreso extends Thread {
         this.archivo = archivo;
         this.area_texto = area_texto;
     }
-
     public void run() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(archivo));
+            int totallineas = (int)br.lines().count();
+            br.close();
+            
+            br = new BufferedReader(new FileReader(archivo));
             String linea;
             String contenido = "";
-            int lineasLeidas = 0;
+            int lineasleidas = 0;
             while ((linea = br.readLine()) != null) {
                 contenido += linea + "\n";
                 lineasLeidas++;
-                barra_Progreso.setValue(lineasLeidas);
-                Thread.sleep(200);
+                int progreso = (int)(((double)lineasleidas / totallineas) * 100);
+                barra_Progreso.setValue(progreso);
+                Thread.sleep(100);
             }
             br.close();
             area_texto.setText(contenido);
