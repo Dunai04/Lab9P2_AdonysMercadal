@@ -38,7 +38,7 @@ public class Progreso extends Thread {
                 contenido += linea + "\n";
                 lineasLeidas++;
                 barra_Progreso.setValue(lineasLeidas);
-                Thread.sleep(100);
+                Thread.sleep(200);
             }
             br.close();
             area_texto.setText(contenido);

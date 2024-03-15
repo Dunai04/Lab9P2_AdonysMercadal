@@ -203,26 +203,9 @@ public class Interfaz extends javax.swing.JFrame {
         int seleccion = fileChooser.showOpenDialog(null);
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             File archivo = fileChooser.getSelectedFile();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(archivo));
-                Progreso actualizador = new Progreso(barra_Progreso, br);
-                actualizador.start();
-                actualizador.join();
-                br = new BufferedReader(new FileReader(archivo));
-                String linea;
-                String contenido = "";
-                while ((linea = br.readLine()) != null) {
-                    contenido += linea + "\n";
-                }
-                br.close();
-                
-                area_texto.setText(contenido);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (InterruptedException ex) {
-            }
+            Progreso actualizador = new Progreso(barra_Progreso, archivo, area_texto);
+            actualizador.start();
         }
-    
     }//GEN-LAST:event_subirarchivoMouseClicked
 
 /**
