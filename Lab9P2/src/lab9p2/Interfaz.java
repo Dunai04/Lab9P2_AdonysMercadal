@@ -4,6 +4,15 @@
  */
 package lab9p2;
 
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+
 /**
  *
  * @author adony
@@ -33,10 +42,10 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        subirarchivo = new javax.swing.JButton();
+        barra_Progreso = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        area_texto = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
 
@@ -103,17 +112,22 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
-        jButton1.setText("Subir Archivos");
+        subirarchivo.setBackground(new java.awt.Color(255, 255, 255));
+        subirarchivo.setForeground(new java.awt.Color(0, 0, 0));
+        subirarchivo.setText("Subir Archivos");
+        subirarchivo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                subirarchivoMouseClicked(evt);
+            }
+        });
 
-        jProgressBar1.setBackground(new java.awt.Color(255, 102, 51));
+        barra_Progreso.setBackground(new java.awt.Color(255, 102, 51));
 
-        jTextArea1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextArea1.setColumns(20);
-        jTextArea1.setForeground(new java.awt.Color(0, 0, 0));
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        area_texto.setBackground(new java.awt.Color(255, 255, 255));
+        area_texto.setColumns(20);
+        area_texto.setForeground(new java.awt.Color(0, 0, 0));
+        area_texto.setRows(5);
+        jScrollPane1.setViewportView(area_texto);
 
         jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
@@ -135,8 +149,8 @@ public class Interfaz extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(94, 94, 94)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton1)
-                                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(subirarchivo)
+                                    .addComponent(barra_Progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(86, 86, 86)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -158,9 +172,9 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
-                .addComponent(jButton1)
+                .addComponent(subirarchivo)
                 .addGap(18, 18, 18)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(barra_Progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -182,10 +196,39 @@ public class Interfaz extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
+    private void subirarchivoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_subirarchivoMouseClicked
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Hola juan selecciona un txt", "txt"));
+        int seleccion = fileChooser.showOpenDialog(null);
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File archivo = fileChooser.getSelectedFile();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(archivo));
+                Progreso actualizador = new Progreso(barra_Progreso, br);
+                actualizador.start();
+                actualizador.join();
+                br = new BufferedReader(new FileReader(archivo));
+                String linea;
+                String contenido = "";
+                while ((linea = br.readLine()) != null) {
+                    contenido += linea + "\n";
+                }
+                br.close();
+                
+                area_texto.setText(contenido);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+            }
+        }
+    
+    }//GEN-LAST:event_subirarchivoMouseClicked
+
+/**
+ * @param args the command line arguments
+ */
+public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -196,16 +239,28 @@ public class Interfaz extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-                }
+
+}
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interfaz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Interfaz.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Interfaz.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Interfaz.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Interfaz.class  
+
+.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -218,7 +273,8 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextArea area_texto;
+    private javax.swing.JProgressBar barra_Progreso;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -228,8 +284,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton subirarchivo;
     // End of variables declaration//GEN-END:variables
 }
