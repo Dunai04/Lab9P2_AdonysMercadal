@@ -39,7 +39,7 @@ public class Progreso extends Thread {
             int lineasleidas = 0;
             while ((linea = br.readLine()) != null) {
                 contenido += linea + "\n";
-                lineasLeidas++;
+                lineasleidas++;
                 int progreso = (int)(((double)lineasleidas / totallineas) * 100);
                 barra_Progreso.setValue(progreso);
                 Thread.sleep(100);
